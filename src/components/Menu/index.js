@@ -6,9 +6,16 @@ import {
   Container, Code, Nav, NavItem, NavText, SignOutButton, SignOutText,
 } from './styles';
 
-export default function Menu() {
+export default function Menu({ translateY }) {
   return (
-    <Container>
+    <Container
+      style={{
+        opacity: translateY.interpolate({
+          inputRange: [0, 150],
+          outputRange: [0, 1],
+        }),
+      }}
+    >
       <Code>
         <Qrcode value="https://www.google.com" size={80} bgColor="#8B10AE" fgColor="#fff" />
       </Code>

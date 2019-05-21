@@ -22,6 +22,8 @@ import Tabs from '~/components/Tabs';
 import Menu from '~/components/Menu';
 
 export default function Main() {
+  let offset = 0;
+
   const translateY = new Animated.Value(0);
   const animatedEvent = Animated.event(
     [
@@ -36,7 +38,32 @@ export default function Main() {
     },
   );
 
-  function onHandlerStateChanged(event) {}
+  function onHandlerStateChanged(event) {
+    if (event.nativeEvent.oldState === State.ACTIVE) {
+      let opened = false;
+      const { translationY } = event.nativeEvent;
+
+      offset += translationY;
+
+      if (translationY >= 80) {
+        opened = true;
+      } else {
+        translateY.setValue(offset);
+        translateY.setOffset(0);
+        offset = 0;
+      }
+
+      Animated.timing(translateY, {
+        toValue: opened ? 300 : 0,
+        duration: 200,
+        useNativeDriver: true,
+      }).start(() => {
+        offset = opened ? 300 : 0;
+        translateY.setOffset(offset);
+        translateY.setValue(0);
+      });
+    }
+  }
 
   return (
     <Container>
@@ -52,8 +79,8 @@ export default function Main() {
               transform: [
                 {
                   translateY: translateY.interpolate({
-                    inputRange: [-350, 0, 380],
-                    outputRange: [-50, 0, 380],
+                    inputRange: [-350, 0, 300],
+                    outputRange: [-50, 0, 300],
                     extrapolate: 'clamp',
                   }),
                 },
@@ -74,7 +101,7 @@ export default function Main() {
           </Card>
         </PanGestureHandler>
       </Content>
-      <Tabs />
+      <Tabs translateY={translateY} />
     </Container>
   );
 }

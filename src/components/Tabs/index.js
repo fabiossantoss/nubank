@@ -5,9 +5,27 @@ import {
   Container, TabsContainer, TabItem, TabText,
 } from './styles';
 
-export default function Tabs() {
+export default function Tabs({ translateY }) {
   return (
-    <Container>
+    <Container
+      style={{
+        transform: [
+          {
+            translateY: translateY.interpolate({
+              inputRange: [0, 300],
+              outputRange: [0, 50],
+              extrapolate: 'clamp',
+            }),
+          },
+        ],
+
+        opacity: translateY.interpolate({
+          inputRange: [0, 380],
+          outputRange: [1, 0.1],
+          extrapolate: 'clamp',
+        }),
+      }}
+    >
       <TabsContainer>
         <TabItem>
           <Icon name="person-add" color="#FFF" size={24} />
